@@ -2,6 +2,9 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import 'hud_date_time_label.dart';
+import 'hud_battery_status_icon.dart';
+import 'hud_link_status_icon.dart';
 import 'hud_mode_label.dart';
 import 'hud_uptime_label.dart';
 
@@ -71,9 +74,42 @@ class HudFrameOverlay extends StatelessWidget {
                       ),
                       SizedBox(width: (labelH * 0.22).clamp(8.0, 22.0)),
                       Expanded(
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: HudUptimeLabel(height: labelH),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Flexible(
+                                    child: HudUptimeLabel(height: labelH),
+                                  ),
+                                  SizedBox(
+                                    width: (labelH * 0.65).clamp(16.0, 92.0),
+                                  ),
+                                  Flexible(
+                                    child: HudDateTimeLabel(height: labelH),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: (labelH * 0.22).clamp(8.0, 22.0)),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerRight,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    HudLinkStatusIcon(size: labelH * 0.7),
+                                    SizedBox(
+                                      width: (labelH * 0.18).clamp(8.0, 18.0),
+                                    ),
+                                    HudBatteryStatusIcon(size: labelH * 0.7),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -325,6 +361,39 @@ class _HudFramePainter extends CustomPainter {
         color: _a(_steel, 0.18),
       );
     }
+
+    final lineX = panel.outerRect.right + rect.width * 0.012;
+    final lineW = math.max(thin, rect.width * 0.0022);
+
+    final extend = rect.height * 0.045;
+    final yTop = math.max(rect.top + rect.height * 0.10, panelTop - extend);
+    final yBottom = math.min(
+      rect.bottom - rect.height * 0.06,
+      panelTop + panelH + extend,
+    );
+    final lineRect = Rect.fromLTWH(
+      lineX,
+      yTop,
+      lineW,
+      math.max(0.0, yBottom - yTop),
+    );
+
+    _glowRect(
+      canvas,
+      lineRect,
+      glowWidth: glow,
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          _a(_cyan, 0.0),
+          _a(_cyan, 0.55),
+          _a(_cyanSoft, 0.22),
+          _a(_cyan, 0.0),
+        ],
+        stops: const [0.0, 0.20, 0.78, 1.0],
+      ),
+    );
   }
 
   void _bottomNotch(
