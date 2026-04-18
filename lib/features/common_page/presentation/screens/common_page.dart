@@ -34,18 +34,22 @@ class _CommonPageState extends State<CommonPage> {
           IndexedStack(
             index: clampedIndex,
             children: [
-              for (final name in _items)
-                Center(
-                  child: Text(
-                    name,
-                    style: const TextStyle(
-                      fontSize: 28,
-                      letterSpacing: 2.0,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white70,
-                    ),
-                  ),
-                ),
+              // Placeholder screens; add real screen content later.
+              for (final _ in _items) const SizedBox.expand(),
+
+              // Screen-name placeholders (disabled for now):
+              // for (final name in _items)
+              //   Center(
+              //     child: Text(
+              //       name,
+              //       style: const TextStyle(
+              //         fontSize: 28,
+              //         letterSpacing: 2.0,
+              //         fontWeight: FontWeight.w600,
+              //         color: Colors.white70,
+              //       ),
+              //     ),
+              //   ),
             ],
           ),
           HudSidebar(

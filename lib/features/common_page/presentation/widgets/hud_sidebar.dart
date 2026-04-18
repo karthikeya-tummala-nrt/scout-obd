@@ -93,7 +93,9 @@ class HudSidebar extends StatelessWidget {
                         width: slotW,
                         height: slotH,
                         child: _HudSidebarItem(
-                          label: i < visibleItemCount ? items[i] : '',
+                          // label: i < visibleItemCount ? items[i] : '',
+                          // Hidden for now; re-enable when you want labels back.
+                          label: '',
                           selected: i == selectedIndex,
                           enabled: i < visibleItemCount,
                           onTap: i < visibleItemCount
