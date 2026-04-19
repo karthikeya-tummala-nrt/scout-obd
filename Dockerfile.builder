@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     libgtk-3-dev liblzma-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN git clone -b main https://github.com/flutter/flutter.git /flutter
+RUN git clone -b stable https://github.com/flutter/flutter.git /flutter
 ENV PATH="/flutter/bin:${PATH}"
 
 WORKDIR /app
