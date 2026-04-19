@@ -11,11 +11,15 @@ RUN apt-get update && apt-get install -y \
 RUN git clone --depth 1 -b stable https://github.com/flutter/flutter.git /flutter
 ENV PATH="/flutter/bin:${PATH}"
 
+RUN flutter --version
+
 WORKDIR /app
+
+COPY pubspec.* ./
+RUN flutter pub get
+
 COPY . .
 
-RUN flutter --version
-RUN flutter pub get
 RUN flutter build linux --release
 
 VOLUME /build/linux/arm64/release/bundle
