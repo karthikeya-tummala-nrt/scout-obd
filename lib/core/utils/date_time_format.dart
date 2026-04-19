@@ -6,6 +6,7 @@ String formatDdMmYyyyHm(DateTime dt) {
   final yyyy = dt.year.toString().padLeft(4, '0');
   final hh = two(dt.hour);
   final min = two(dt.minute);
+  final sec = two(dt.second);
 
-  return '$dd-$mm-$yyyy  $hh:$min';
+  return '$dd-$mm-$yyyy  $hh:$min:$sec';
 }

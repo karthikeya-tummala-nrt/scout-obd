@@ -1,43 +1,26 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scout_display/core/providers.dart';
 import 'package:scout_display/core/utils/date_time_format.dart';
 
-class HudDateTimeLabel extends StatefulWidget {
+class HudDateTimeLabel extends ConsumerWidget {
   const HudDateTimeLabel({super.key, required this.height});
 
   final double height;
 
   @override
-  State<HudDateTimeLabel> createState() => _HudDateTimeLabelState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(tickerProvider).value;
 
-class _HudDateTimeLabelState extends State<HudDateTimeLabel> {
-  Timer? _timer;
+    final offsetMicros = ref.watch(timeStateProvider).offsetMicros;
+    final now = DateTime.now().microsecondsSinceEpoch;
+    final corrected = DateTime.fromMicrosecondsSinceEpoch(now + offsetMicros);
 
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!mounted) return;
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _timer = null;
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final h = widget.height;
+    final h = height;
     final fontSize = h * 0.44;
 
     return Text(
-      formatDdMmYyyyHm(DateTime.now()),
+      formatDdMmYyyyHm(corrected),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
