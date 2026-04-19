@@ -33,4 +33,4 @@ RUN chown -R appuser:appuser /app
 
 USER appuser
 
-CMD ["./scout_obd", "fullscreen"]
+CMD ["./scout_display", "fullscreen"]
