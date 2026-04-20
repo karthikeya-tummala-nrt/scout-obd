@@ -41,7 +41,7 @@ class HudModeLabel extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'Poppins',
-                  fontSize: height * 0.44,
+                  fontSize: (height * 0.44).clamp(10.0, 18.0),
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.6,
                   height: 1,

@@ -17,24 +17,27 @@ class HudDateTimeLabel extends ConsumerWidget {
     final corrected = DateTime.fromMicrosecondsSinceEpoch(now + offsetMicros);
 
     final h = height;
-    final fontSize = h * 0.44;
+    final fontSize = (h * 0.44).clamp(10.0, 18.0);
 
-    return Text(
-      formatDdMmYyyyHm(corrected),
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      style: TextStyle(
-        color: Colors.white,
-        fontFamily: 'Poppins',
-        fontSize: fontSize,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.6,
-        height: 1,
-        decoration: TextDecoration.none,
-        shadows: const [
-          Shadow(color: Colors.black54, blurRadius: 6, offset: Offset(0, 1)),
-        ],
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: Text(
+        formatDdMmYyyyHm(corrected),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          color: Colors.white,
+          fontFamily: 'Poppins',
+          fontSize: fontSize,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.6,
+          height: 1,
+          decoration: TextDecoration.none,
+          shadows: const [
+            Shadow(color: Colors.black54, blurRadius: 6, offset: Offset(0, 1)),
+          ],
+        ),
       ),
-    );
-  }
+    );  }
 }
