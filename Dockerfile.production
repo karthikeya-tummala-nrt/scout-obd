@@ -1,0 +1,32 @@
+FROM debian:bookworm-slim AS production
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgtk-3-0 \
+    libglib2.0-0 \
+    libstdc++6 \
+    libx11-6 \
+    libasound2 \
+    libwayland-client0 \
+    libwayland-cursor0 \
+    libwayland-egl1 \
+    libegl1 \
+    libgles2 \
+    libgl1 \
+    libgl1-mesa-dri \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m appuser
+
+WORKDIR /app
+
+COPY ./bundle/ .
+
+ENV GDK_BACKEND=wayland
+ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
+
+RUN chown -R appuser:appuser /app
+USER appuser
+
+CMD ["./scout_display", "fullscreen"]
