@@ -1,63 +1,65 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scout_display/core/providers.dart';
 import '../widgets/hud_sidebar.dart';
 
-class CommonPage extends StatefulWidget {
+class CommonPage extends ConsumerStatefulWidget {
   const CommonPage({super.key});
 
   @override
-  State<CommonPage> createState() => _CommonPageState();
+  ConsumerState<CommonPage> createState() => _CommonPageState();
 }
 
-class _CommonPageState extends State<CommonPage> {
+class _CommonPageState extends ConsumerState<CommonPage> {
   int _selectedIndex = 0;
 
   static const _items = <String>[
-    'SYSTEM',
-    'DRIVE',
-    'POWER',
-    'COMPUTE',
-    'SENSOR',
-    'COM',
-    'ALERTS',
-    'PAYLOAD',
+    'SYSTEM', 'DRIVE', 'POWER', 'COMPUTE', 'SENSOR', 'COM', 'ALERTS', 'PAYLOAD',
   ];
 
   @override
   Widget build(BuildContext context) {
-    final clampedIndex = _selectedIndex.clamp(0, _items.length - 1);
+    final timeSync = ref.watch(timeSyncRepoProvider);
 
+    return timeSync.when(
+      data: (_) => _buildMainUI(),
+      loading: () => const Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(child: CircularProgressIndicator(color: Colors.lightBlueAccent)),
+      ),
+      error: (err, stack) => Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error, color: Colors.red, size: 64),
+              Text('Startup failed: $err', style: const TextStyle(color: Colors.white)),
+              ElevatedButton(
+                onPressed: () => ref.invalidate(timeSyncRepoProvider),  // Retry
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMainUI() {  // Extracted original UI
+    final clampedIndex = _selectedIndex.clamp(0, _items.length - 1);
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           IndexedStack(
             index: clampedIndex,
-            children: [
-              // Placeholder screens; add real screen content later.
-              for (final _ in _items) const SizedBox.expand(),
-
-              // Screen-name placeholders (disabled for now):
-              // for (final name in _items)
-              //   Center(
-              //     child: Text(
-              //       name,
-              //       style: const TextStyle(
-              //         fontSize: 28,
-              //         letterSpacing: 2.0,
-              //         fontWeight: FontWeight.w600,
-              //         color: Colors.white70,
-              //       ),
-              //     ),
-              //   ),
-            ],
+            children: [for (final _ in _items) const SizedBox.expand()],
           ),
           HudSidebar(
             items: _items,
             selectedIndex: clampedIndex,
-            onSelect: (index) {
-              setState(() => _selectedIndex = index);
-            },
+            onSelect: (index) => setState(() => _selectedIndex = index),
           ),
         ],
       ),

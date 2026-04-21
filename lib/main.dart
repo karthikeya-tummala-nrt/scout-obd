@@ -2,21 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'core/startup.dart';
 import 'features/common_page/presentation/screens/common_page.dart';
 import 'features/common_page/presentation/widgets/app_background.dart';
-final container = ProviderContainer();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  startup(container);
-
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const MyApp(),
+    const ProviderScope(
+        child: MyApp()
     ),
   );
 }

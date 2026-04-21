@@ -5,44 +5,45 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:comm_module/transport/udp_transport.dart';
 import 'package:mavlink_nrt/dialects/ardupilotmega.dart';
 import 'package:mavlink_nrt/mavlink.dart';
+import 'package:scout_display/core/logger/logger.dart';
 
 import 'package:scout_display/core/mavlink_service.dart';
 import 'package:scout_display/shared/data/repositories/time_sync_repository_impl.dart';
 
-final transportProvider = Provider<UdpTransport>((ref) {
+final transportProvider = FutureProvider<UdpTransport>((ref) async {
+  final logger = Logger('TransportProvider');
 
   final transport = UdpTransport(
     address: InternetAddress.anyIPv4,
     port: 7500,
-    remoteAddress: InternetAddress("172.17.0.2"),
-    remotePort: 7500,
+    remoteAddress: InternetAddress("192.168.168.98"),
+    remotePort: 7000,
   );
 
-  transport.connect();
+  // logger.i('Remote IP: $')
 
-  transport.onData.listen((data) {
-    print("RX BYTES[Transport]: $data");
-  });
+  await transport.connect();
   return transport;
 });
 
-final parserProvider = Provider<MavlinkParser>((ref) {
-  return MavlinkParser(MavlinkDialectArdupilotmega());
-});
 
-final mavlinkServiceProvider = Provider<MavlinkService>((ref) {
+final mavlinkServiceProvider = FutureProvider<MavlinkService>((ref) async {
+
+  final transport = await ref.watch(transportProvider.future);
 
   final service = MavlinkService(
-    transport: ref.read(transportProvider),
-    parser: ref.read(parserProvider),
+    transport: transport,
+    parser: MavlinkParser(MavlinkDialectArdupilotmega()),
   )..init();
 
   return service;
 });
 
-final timeSyncRepoProvider = Provider<void>((ref) {
+final timeSyncRepoProvider = FutureProvider<void>((ref) async {
+  final mavlinkService = await ref.watch(mavlinkServiceProvider.future);
+
   final repo = TimeSyncRepositoryImpl(
-    ref.read(mavlinkServiceProvider),
+    mavlinkService,
     ref.read(timeNowProvider),
   );
 
@@ -53,7 +54,7 @@ final timeSyncRepoProvider = Provider<void>((ref) {
         .setOffset(sync.offset);
   });
 
-  Timer.run(() => repo.sendRequest()); // Fire timesync request once to avoid 10 seconds delay
+  repo.sendRequest(); // Fire timesync request once to avoid 10 seconds delay
 
   return null;
 });

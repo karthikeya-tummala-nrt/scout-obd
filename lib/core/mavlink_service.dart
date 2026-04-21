@@ -4,7 +4,7 @@ import 'package:comm_module/comm_module.dart';
 import 'package:mavlink_nrt/mavlink.dart';
 
 class MavlinkService {
-  final UdpTransport transport;
+  final Transport transport;
   final MavlinkParser parser;
 
   final _frameController = StreamController<MavlinkFrame>.broadcast();
