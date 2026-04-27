@@ -54,8 +54,6 @@ final timeSyncRepoProvider = FutureProvider<void>((ref) async {
         .setOffset(sync.offset);
   });
 
-  repo.sendRequest(); // Fire timesync request once to avoid 10 seconds delay
-
   return null;
 });
 

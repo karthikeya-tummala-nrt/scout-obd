@@ -19,6 +19,7 @@ class _CommonPageState extends ConsumerState<CommonPage> {
 
   @override
   Widget build(BuildContext context) {
+    final transport = ref.watch(transportProvider);
     final timeSync = ref.watch(timeSyncRepoProvider);
 
     return timeSync.when(
